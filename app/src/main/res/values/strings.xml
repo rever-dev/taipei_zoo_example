@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Taipei_zoo_example</string>
+
+    <string name="noDataAvailable">沒有資料顯示</string>
+
+    <string name="outDoorArea">戶外區</string>
+    <string name="inDoorArea">室內區</string>
+
+    <string name="noMemoData">無休館資訊</string>
+
+    <string name="seeMore">探索更多</string>
+    <string name="linkToWeb">前往網站</string>
+
+
+
+
+</resources>
