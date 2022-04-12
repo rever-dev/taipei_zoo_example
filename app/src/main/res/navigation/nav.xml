@@ -12,7 +12,11 @@
         tools:layout="@layout/fragment_home_page" >
         <action
             android:id="@+id/action_homePageFragment_to_infoPageFragment"
-            app:destination="@id/infoPageFragment" />
+            app:destination="@id/infoPageFragment"
+            app:enterAnim="@anim/anim_fragment_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@anim/anim_fragment_out" />
     </fragment>
     <fragment
         android:id="@+id/infoPageFragment"
@@ -20,6 +24,10 @@
         android:label="InfoPageFragment" >
         <action
             android:id="@+id/action_infoPageFragment_self"
-            app:destination="@id/infoPageFragment" />
+            app:destination="@id/infoPageFragment"
+            app:enterAnim="@anim/anim_fragment_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@anim/anim_fragment_out" />
     </fragment>
 </navigation>

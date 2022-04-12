@@ -1,36 +1,30 @@
 package com.reverchen.taipei_zoo_example.InfoPage
 
+import android.content.Intent
 import android.graphics.Paint
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.reverchen.taipei_zoo_example.BaseFragment
 import com.reverchen.taipei_zoo_example.HomePage.HomePageAdapter
+import com.reverchen.taipei_zoo_example.LoadingView.LoadingView
 import com.reverchen.taipei_zoo_example.R
 import com.reverchen.taipei_zoo_example.databinding.FragmentInfoPageBinding
 import com.squareup.picasso.Picasso
 import dev.weiqi.resof.colorIntOf
 import dev.weiqi.resof.drawableOf
 import dev.weiqi.resof.stringOf
-import kotlin.math.log
 
 
-class InfoPageFragment(val _id: Int) : BaseFragment<InfoPageViewModel, FragmentInfoPageBinding>() {
-    
-    
-    companion object {
-        fun newInstance(id: Int) = InfoPageFragment(id)
-    }
-    
+class InfoPageFragment() : BaseFragment<InfoPageViewModel, FragmentInfoPageBinding>() {
     
     override fun initViewModel() {
         vm = ViewModelProvider(this)[InfoPageViewModel::class.java]
@@ -42,30 +36,61 @@ class InfoPageFragment(val _id: Int) : BaseFragment<InfoPageViewModel, FragmentI
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        vm.init(_id)
+        
+        vm.init(
+            arguments?.getInt("id") ?: -1
+        )
     }
     
-    private val moreAdapter = HomePageAdapter()
+    private val loading = LoadingView()
+    private val moreAdapter = HomePageAdapter().apply {
+        callback = object : HomePageAdapter.ItemClickCallback{
+            override fun onItemClick(_id: Int) {
+                findNavController().navigate(
+                    R.id.action_infoPageFragment_self,
+                    bundleOf(Pair("id", _id))
+                )
+            }
+        }
+    }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    
         vb.infoFragRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = moreAdapter
         }
+    
+        vb.infoFragToolbar.apply {
+            setupWithNavController(
+                findNavController(),
+                AppBarConfiguration(findNavController().graph)
         
+            )
+            navigationIcon = drawableOf(R.drawable.ic_round_arrow_back_ios_24)
+        }
+    
+        setListener()
         bindData()
     }
     
     private fun bindData() {
-        
+
+//        vm.isLoading.observe(viewLifecycleOwner) {
+//            if (it)
+//                loading.show(parentFragmentManager, null)
+//            else
+//                loading.dismiss()
+//        }
+    
         vm.name.observe(viewLifecycleOwner) {
-            vb.infoFragToolbar.apply {
+            vb.infoFragCollBar.apply {
                 title = it
-                setTitleTextColor(colorIntOf(R.color.white))
+                setCollapsedTitleTextColor(colorIntOf(R.color.white))
             }
         }
-        
+    
         vm.imgUrl.observe(viewLifecycleOwner) {
             Picasso.get()
                 .load(it)
@@ -92,16 +117,28 @@ class InfoPageFragment(val _id: Int) : BaseFragment<InfoPageViewModel, FragmentI
                 tag = it
             }
         }
-        
+    
         vm.gardensData.observe(viewLifecycleOwner) {
             moreAdapter.submitList(it)
         }
     }
     
-    private fun steListener() {
-        findNavController()
+    private fun setListener() {
+        
         vb.infoFragToolbar.setNavigationOnClickListener {
+            findNavController().popBackStack(R.id.homePageFragment, false)
         }
+        
+        vb.infoFragTvUrlLink.setOnClickListener {
+            if (vm.url.value != null)
+                intentUrl(vm.url.value!!)
+        }
+    }
+    
+    private fun intentUrl(url: String) {
+        val i = Intent(Intent.ACTION_VIEW)
+        i.data = Uri.parse(url)
+        startActivity(i)
     }
     
 }

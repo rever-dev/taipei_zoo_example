@@ -22,7 +22,6 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment?
         val navController = navHostFragment?.navController ?: return
-    
-        val appBarConfig = AppBarConfiguration(navController.graph)
+        AppBarConfiguration(navController.graph)
     }
 }

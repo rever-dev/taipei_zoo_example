@@ -4,19 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.reverchen.taipei_zoo_example.BaseFragment
-import com.reverchen.taipei_zoo_example.InfoPage.InfoPageFragment
 import com.reverchen.taipei_zoo_example.LoadingView.LoadingView
 import com.reverchen.taipei_zoo_example.R
 import com.reverchen.taipei_zoo_example.databinding.FragmentHomePageBinding
-import dev.weiqi.resof.stringOf
 
 class HomePageFragment : BaseFragment<HomePageViewModel, FragmentHomePageBinding>() {
     
@@ -32,13 +29,16 @@ class HomePageFragment : BaseFragment<HomePageViewModel, FragmentHomePageBinding
     private val homeAdapter = HomePageAdapter().apply {
         callback = object : HomePageAdapter.ItemClickCallback{
             override fun onItemClick(_id: Int) {
-                
+
 //                parentFragmentManager.beginTransaction()
 //                    .replace(R.id.fragmentContainerView, InfoPageFragment.newInstance(_id), null)
 //                    .addToBackStack(null)
 //                    .commit()
-                
-                findNavController().navigate(R.id.action_homePageFragment_to_infoPageFragment)
+    
+                findNavController().navigate(
+                    R.id.action_homePageFragment_to_infoPageFragment,
+                    bundleOf(Pair("id", _id))
+                )
             }
         }
     }
